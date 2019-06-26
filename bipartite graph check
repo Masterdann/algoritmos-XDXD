@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+int c[10000];
+vector <vector <int> > G;
+bool dfs(int x, int p){
+   // cout<<x<<" "<<c[x]<<endl;
+    bool ans=0;
+    for(int i=0;i<G[x].size ();i++){
+     int v=G[x][i];
+     if(v!=p){
+        int cadj=1-c[x];
+        if(c[v]==-1){
+                c[v]=cadj;
+            ans=ans and dfs(v, x);
+        }else{
+            if(c[v]==c[x]){
+                return false;
+            }
+        }
+     }
+    }
+    return true;
+}
+int main()
+{
+    int n,m;
+    while(cin>>n>>m){
+
+        G=vector <vector <int> >(n+1);
+        for(int i=0;i<m;i++){
+            int x,y;
+            cin>>x>>y;
+            G[x].push_back(y);
+            G[y].push_back(x);
+        }
+        memset(c, -1, (n+1)*4);
+        bool sw=1;
+        for(int i=0;i<n;i++){
+            if(c[i]==-1){
+                c[i]=0;
+                sw=sw and dfs(i, -1);
+            }
+        }
+        for(int i=0;i<n;i++)cout<<c[i]<<" ";
+        cout<<endl;git
+        if(sw)cout<<"si"<<endl;
+        else cout<<"no"<<endl;
+    }
+}

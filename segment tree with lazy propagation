@@ -2,6 +2,7 @@ void build(int node, int start, int end)
 {
     if(start == end){
         tree[node] = A[start];
+        lazy[node]=0;
     }
     else{
         int mid = (start + end) / 2;

@@ -1,0 +1,67 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define N 500000
+#define LN 20
+
+void BuildLCA(int n, vector<int> Tree[], int Parent[][N], int Depth[]){
+	for(int u=0; u<n; u++) for(int j=0; j<LN; j++) Parent[j][u]=-1;
+	queue<int> Q; Q.push(0);
+	memset(Depth, -1, n*4); Depth[0]=0; Parent[0][0]=0;
+	while(!Q.empty()){
+		int u=Q.front(); Q.pop();
+		for(int i=0; i<Tree[u].size(); i++){
+			int v=Tree[u][i];
+			if(Depth[v]==-1){
+				Depth[v]=Depth[u]+1;
+				Parent[0][v]=u;
+				Q.push(v);
+			}
+		}
+	}
+	for(int i=1; i<LN; i++)
+		for(int j=0; j<n; j++)
+				Parent[i][j]=Parent[i-1][ Parent[i-1][j] ];
+}
+
+int LCA(int u, int v, int Parent[][N], int Depth[]){
+	if(Depth[u]<Depth[v]) swap(u, v);
+	int diff=Depth[u]-Depth[v];
+	for(int i=0; i<LN; i++) if((diff>>i)&1) u=Parent[i][u];
+	if(u==v) return u;
+	for(int i=LN-1; i>=0; i--)
+		if(Parent[i][u]!=Parent[i][v]){
+			u=Parent[i][u];
+			v=Parent[i][v];
+		}
+	return Parent[0][u];
+}
+
+vector<int> AdjList[N];
+int Depth[N], Parent[LN][N];
+
+int main(){
+	int n, m, a, b, q, test, Test;
+	scanf("%d", &Test);
+	for(int test=1; test<=Test; test++){
+		scanf("%d", &n);
+		for(int i=0; i<n; i++) AdjList[i].clear();
+		for(int i=0; i<n; i++){
+			scanf("%d", &m);
+			while(m--){
+				scanf("%d", &a); a--;
+				AdjList[i].push_back(a);
+				AdjList[a].push_back(i);
+			}
+		}
+		BuildLCA(n, AdjList, Parent, Depth);
+		scanf("%d", &q);
+		printf("Case %d:\n", test);
+		while(q--){
+			scanf("%d %d", &a, &b); a--; b--;
+			printf("%d\n", LCA(a, b, Parent, Depth)+1 );
+		}
+	}
+	return 0;
+}
